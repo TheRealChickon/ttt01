@@ -1,4 +1,7 @@
 <?php
+ session_start();
+ session_destroy();
+ session_start();
 
 require_once 'Board.php';
 
@@ -6,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if(!isset($_SESSION ['board'])) {
+if (!isset($_SESSION ['board'])) {
     $_SESSION['board'] = new Board();
     //   $this->board = new TikTakToe(array(array("","",""), array("","",""), array("","",""))); // New game with costom starting point potentially later
 }
@@ -42,7 +45,7 @@ $boardArray = $_SESSION['board']->getBoard();
         input.field {
             border: 0;
             background-color: white;
-            color: white; /* make the value invisible (white) */
+            color: black; /* make the value invisible (white) */
             height: 8rem;
             width: 8rem;
             font-family: Arial;
@@ -67,6 +70,7 @@ $boardArray = $_SESSION['board']->getBoard();
 
         /* O is light blue */
         table.tic {
+            color: #7777ee;
             border-collapse: collapse;
         }
     </style>
@@ -75,16 +79,18 @@ $boardArray = $_SESSION['board']->getBoard();
 <section>
     <h1>Tic-Tac-Toe</h1>
     <article id="mainContent">
-        <h2>Your free browsergame!</h2>
-        <p>Type your game instructions here...</p>
-        <form method="get" action="index.php">
-            <table class="tic">
-                <?php foreach ($boardArray as $row) { ?>
-                    <?php foreach($row as $boardRow){ ?>
-                        echo $boardRow;
+        <h2>bread</h2>
+        <table class="tic">
+            <?php foreach ($boardArray as $rowIndex => $row) { ?>
+                <tr>
+                    <?php foreach ($row as $colIndex => $cell) { ?>
+                        <td>
+                        <input type="submit" class="field" name="cell-<?= $rowIndex ?>-<?= $colIndex ?>"
+                               value="<?= $cell ?>"/>
+                        </td>
                     <?php } ?>
-                <?php } ?>
-            </table>
+                </tr>
+            <?php } ?>
         </form>
     </article>
 </section>

@@ -3,9 +3,9 @@
 class Board
 {
     private array $board = array(
-        array("X","",""),
-        array("","",""),
-        array("","","")
+        array("X","X",""),
+        array("","O",""),
+        array("","X","")
     );
 
     /**
