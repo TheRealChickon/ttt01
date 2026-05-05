@@ -1,27 +1,26 @@
 <?php
+
+require_once 'Board.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 if(!isset($_SESSION ['board'])) {
-    $_SESSION['board'] = [
-    ["X", "", ""],
-    ["O", "", "",],
-    [ "", "", ""]
-    ];
+    $_SESSION['board'] = new Board();
     //   $this->board = new TikTakToe(array(array("","",""), array("","",""), array("","",""))); // New game with costom starting point potentially later
-
 }
-// echo($_SESSION ['board'] . "<br/ >");
+
+var_dump($_SESSION ['board']);
 ?>
 
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Tic-Tac-Toe. This is the title. It is displayed in the titlebar of the window in most browsers.</title>
-    <meta name="description"
-          content="Tic-Tac-Toe-Game. Here is a short description for the page. This text is displayed e. g. in search engine result listings."/>
+    <title>Tic-Tac-Toe</title>
+    <meta name="description" content="Tic-Tac-Toe game"/>
     <style>
         table.tic td {
             border: 1px solid #333; /* grey cell borders */
