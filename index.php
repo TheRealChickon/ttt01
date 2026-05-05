@@ -11,7 +11,10 @@ if(!isset($_SESSION ['board'])) {
     //   $this->board = new TikTakToe(array(array("","",""), array("","",""), array("","",""))); // New game with costom starting point potentially later
 }
 
-var_dump($_SESSION ['board']);
+$boardArray = $_SESSION['board']->getBoard();
+
+
+// var_dump($_SESSION ['board']);
 ?>
 
 <!DOCTYPE html>
@@ -76,21 +79,13 @@ var_dump($_SESSION ['board']);
         <p>Type your game instructions here...</p>
         <form method="get" action="index.php">
             <table class="tic">
-                <tr>
-                    <td><span class="colorO">O</span></td>
-                    <td><input type="submit" class="reset field" name="cell-0-1" value="X"/></td>
-                    <td><input type="submit" class="reset field" name="cell-0-2" value="X"/></td>
-                </tr>
-                <tr>
-                    <td><span class="colorX">X</span></td>
-                    <td><input type="submit" class="reset field" name="cell-1-1" value="X"/></td>
-                    <td><input type="submit" class="reset field" name="cell-1-2" value="X"/></td>
-                </tr>
-                <tr>
-                    <td><input type="submit" class="reset field" name="cell-2-0" value="X"/></td>
-                    <td><input type="submit" class="reset field" name="cell-2-1" value="X"/></td>
-                    <td><input type="submit" class="reset field" name="cell-2-2" value="X"/></td>
-                </tr>
+                <?php
+                foreach ($boardArray as $row) {
+                    foreach($row as $boardRow){
+                        echo $boardRow;
+                    }
+                }
+                ?>
             </table>
         </form>
     </article>
