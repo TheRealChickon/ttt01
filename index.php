@@ -79,13 +79,11 @@ $boardArray = $_SESSION['board']->getBoard();
         <p>Type your game instructions here...</p>
         <form method="get" action="index.php">
             <table class="tic">
-                <?php
-                foreach ($boardArray as $row) {
-                    foreach($row as $boardRow){
+                <?php foreach ($boardArray as $row) { ?>
+                    <?php foreach($row as $boardRow){ ?>
                         echo $boardRow;
-                    }
-                }
-                ?>
+                    <?php } ?>
+                <?php } ?>
             </table>
         </form>
     </article>
