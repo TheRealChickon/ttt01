@@ -2,18 +2,19 @@
 
 class Board
 {
+    // Cleared the hardcoded test data so it starts empty
     private array $board = array(
-        array("X","X",""),
-        array("","O",""),
-        array("","X","")
+        array("","",""),
+        array("","",""),
+        array("","","")
     );
 
     /**
      * @param array|array[] $board
      */
-    public function __construct(array $board = []) // add defaut value to board
+    public function __construct(array $board = []) 
     {
-        if (!empty($board)) { // only overwrite if not empty
+        if (!empty($board)) { 
             $this->board = $board;
         }
     }
@@ -27,7 +28,4 @@ class Board
     {
         $this->board = $board;
     }
-
-
 }
-
