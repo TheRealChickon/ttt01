@@ -1,27 +1,57 @@
 <?php
- session_start();
- session_destroy();
- session_start();
+session_start();
 
 require_once 'Board.php';
+require_once 'TikTakToe.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+// If reset button is pressed, clear the session to start over
+if (isset($_POST['reset'])) {
+    session_destroy();
+    header("Location: index.php");
+    exit();
 }
 
-if (!isset($_SESSION ['board'])) {
+// Initialize the game if it doesn't exist
+if (!isset($_SESSION['board'])) {
     $_SESSION['board'] = new Board();
-    //   $this->board = new TikTakToe(array(array("","",""), array("","",""), array("","",""))); // New game with costom starting point potentially later
+    $_SESSION['turn'] = "X"; // X always starts
+    $_SESSION['winner'] = "";
 }
 
-$boardArray = $_SESSION['board']->getBoard();
+$boardObj = $_SESSION['board'];
+$game = new TikTakToe();
 
+// Handle a move if the game isn't over yet
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['winner'] === "") {
+    // Check which button was clicked
+    for ($r = 0; $r < 3; $r++) {
+        for ($c = 0; $c < 3; $c++) {
+            if (isset($_POST["cell-$r-$c"])) {
+                // Try to make the move
+                if ($game->makeMove($boardObj, $r, $c, $_SESSION['turn'])) {
+                    
+                    // Check if someone won after this move
+                    $winner = $game->checkWin($boardObj->getBoard());
+                    if ($winner !== "") {
+                        $_SESSION['winner'] = $winner;
+                    } else {
+                        // Switch turn
+                        if ($_SESSION['turn'] === "X") {
+                            $_SESSION['turn'] = "O";
+                        } else {
+                            $_SESSION['turn'] = "X";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
-// var_dump($_SESSION ['board']);
+$boardArray = $boardObj->getBoard();
 ?>
 
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -29,7 +59,7 @@ $boardArray = $_SESSION['board']->getBoard();
     <meta name="description" content="Tic-Tac-Toe game"/>
     <style>
         table.tic td {
-            border: 1px solid #333; /* grey cell borders */
+            border: 1px solid #333;
             width: 8rem;
             height: 8rem;
             vertical-align: middle;
@@ -45,7 +75,7 @@ $boardArray = $_SESSION['board']->getBoard();
         input.field {
             border: 0;
             background-color: white;
-            color: black; /* make the value invisible (white) */
+            color: black; /* you had this as white, changed to black so you can see empty spaces but colors override below */
             height: 8rem;
             width: 8rem;
             font-family: Arial;
@@ -56,19 +86,17 @@ $boardArray = $_SESSION['board']->getBoard();
 
         input.field:hover {
             border: 0;
-            color: #c81657; /* red on hover */
+            color: #c81657; 
         }
 
         .colorX {
             color: #e77;
         }
 
-        /* X is light red */
         .colorO {
             color: #77e;
         }
 
-        /* O is light blue */
         table.tic {
             color: #7777ee;
             border-collapse: collapse;
@@ -79,18 +107,38 @@ $boardArray = $_SESSION['board']->getBoard();
 <section>
     <h1>Tic-Tac-Toe</h1>
     <article id="mainContent">
-        <h2>bread</h2>
-        <table class="tic">
-            <?php foreach ($boardArray as $rowIndex => $row) { ?>
-                <tr>
-                    <?php foreach ($row as $colIndex => $cell) { ?>
-                        <td>
-                        <input type="submit" class="field" name="cell-<?= $rowIndex ?>-<?= $colIndex ?>"
-                               value="<?= $cell ?>"/>
-                        </td>
-                    <?php } ?>
-                </tr>
-            <?php } ?>
+        
+        <h2>
+            <?php 
+                // Display winner or current turn
+                if ($_SESSION['winner'] !== "") {
+                    echo "Player " . $_SESSION['winner'] . " wins!";
+                } else {
+                    echo "Current Turn: " . $_SESSION['turn'];
+                }
+            ?>
+        </h2>
+
+        <form method="POST" action="index.php">
+            <table class="tic">
+                <?php foreach ($boardArray as $rowIndex => $row) { ?>
+                    <tr>
+                        <?php foreach ($row as $colIndex => $cell) { 
+                            // Apply your custom colors dynamically
+                            $colorClass = "";
+                            if ($cell === "X") $colorClass = "colorX";
+                            if ($cell === "O") $colorClass = "colorO";
+                        ?>
+                            <td>
+                            <input type="submit" class="field <?= $colorClass ?>" name="cell-<?= $rowIndex ?>-<?= $colIndex ?>"
+                                   value="<?= $cell ?>"/>
+                            </td>
+                        <?php } ?>
+                    </tr>
+                <?php } ?>
+            </table>
+            
+            <button type="submit" name="reset" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer;">Restart Game</button>
         </form>
     </article>
 </section>
